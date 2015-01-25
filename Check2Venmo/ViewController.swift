@@ -21,10 +21,26 @@ class ViewController: UIViewController, TesseractDelegate  {
         tesseract.language = "eng";
         tesseract.delegate = self;
 //        tesseract.setVariableValue("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", forKey: "tessedit_char_whitelist");
-        tesseract.image = UIImage(named: "IMG_5684");
+        tesseract.image = UIImage(named: "IMG_5684")?.blackAndWhite();
+        self.imageView.image = UIImage(named: "IMG_5684")?.blackAndWhite();
         tesseract.recognize();
         
         NSLog("%@", tesseract.recognizedText);
+        NSLog("%@", tesseract.getConfidenceByTextline);
+        let nsstring = NSString(string: tesseract.recognizedText);
+        
+        var error: NSError?
+        let regex = NSRegularExpression(pattern: "[0-9]+[.][0-9]{2}", options: nil, error: &error);
+        regex?.enumerateMatchesInString(tesseract.recognizedText, options: nil, range: NSMakeRange(0, countElements(tesseract.recognizedText)), usingBlock: { (match, flags, stop) -> Void in
+            let string = nsstring.substringWithRange(match.range);
+            NSLog("%@", string);
+        })
+
+        
+//        var array = string.componentsSeparatedByString("\n");
+//        for line in array {
+//            NSLog("%@", (line as NSString).doubleValue);
+//        }
         self.textView.text = tesseract.recognizedText;
     }
     
