@@ -50,37 +50,40 @@ class ViewController: UIViewController, TesseractDelegate  {
         tesseract.delegate = self;
         tesseract.image = self.imageView.image;
         tesseract.recognize();
+        NSLog("%@", tesseract.recognizedText);
         
-        // Parse words and draw boxes
+        // Setup regex
+        var error: NSError?
+        let regex = NSRegularExpression(pattern: "[0-9]+[.][0-9]{2}", options: nil, error: &error);
+
+        // Parse words and draw bounding boxes
         let path = UIBezierPath();
         let ratio = self.imageView.frame.size.width / self.imageView.image!.size.width;
         let y = self.imageView.frame.origin.y;
         let height = self.imageView.frame.size.height;
 
         for object in tesseract.getConfidenceByWord {
+            
             let dict = object as [String : AnyObject];
-            NSLog("%@", dict);
-            
-            let box = (dict["boundingbox"] as NSValue).CGRectValue();
-            let confidence = dict["confidence"] as Double;
             let text = dict["text"] as String;
+            let range = regex?.rangeOfFirstMatchInString(text, options: nil, range: NSMakeRange(0, countElements(text)));
             
-            let convertedBox = CGRect(x: box.origin.x * ratio, y: height - (box.origin.y + box.size.height) * ratio, width: box.size.width * ratio, height: box.size.height * ratio)
-            let boxPath = UIBezierPath(rect: convertedBox);
-            path.appendPath(boxPath);
+            if (range?.location != NSNotFound) {
+            
+                NSLog("%@", dict);
+                
+                let string = (text as NSString).substringWithRange(range!);
+                NSLog("%@", string);
+
+                let box = (dict["boundingbox"] as NSValue).CGRectValue();
+                let confidence = dict["confidence"] as Double;
+                let convertedBox = CGRect(x: box.origin.x * ratio, y: height - (box.origin.y + box.size.height) * ratio, width: box.size.width * ratio, height: box.size.height * ratio)
+                let boxPath = UIBezierPath(rect: convertedBox);
+                path.appendPath(boxPath);
+            }
         }
-        
+
         self.shapeLayer.path = path.CGPath;
-        
-        
-        // Find matches
-        let nsstring = NSString(string: tesseract.recognizedText);
-        var error: NSError?
-        let regex = NSRegularExpression(pattern: "[0-9]+[.][0-9]{2}", options: nil, error: &error);
-        regex?.enumerateMatchesInString(tesseract.recognizedText, options: nil, range: NSMakeRange(0, countElements(tesseract.recognizedText)), usingBlock: { (match, flags, stop) -> Void in
-            let string = nsstring.substringWithRange(match.range);
-            NSLog("%@", string);
-        })
     }
     
     
