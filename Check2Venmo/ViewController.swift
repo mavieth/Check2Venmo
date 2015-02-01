@@ -12,7 +12,7 @@ class ViewController: UIViewController, TesseractDelegate  {
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var ratioConstraint: NSLayoutConstraint!
-    let shapeLayer = CAShapeLayer();
+    var buttons: [UIButton] = [];
     
     
     override func viewDidLoad() {
@@ -29,18 +29,6 @@ class ViewController: UIViewController, TesseractDelegate  {
         self.imageView.addConstraint(self.ratioConstraint);
     }
     
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews();
-        
-        // Fit shapeLayer to imageView
-        self.shapeLayer.strokeColor = UIColor.redColor().CGColor;
-        self.shapeLayer.fillColor = UIColor.yellowColor().colorWithAlphaComponent(0.2).CGColor;
-        self.shapeLayer.frame = self.imageView.bounds;
-        self.imageView.layer.addSublayer(self.shapeLayer);
-    }
-    
-    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated);
         
@@ -56,12 +44,12 @@ class ViewController: UIViewController, TesseractDelegate  {
         var error: NSError?
         let regex = NSRegularExpression(pattern: "[0-9]+[.][0-9]{2}", options: nil, error: &error);
 
-        // Parse words and draw bounding boxes
-        let path = UIBezierPath();
+        // Setup constants
         let ratio = self.imageView.frame.size.width / self.imageView.image!.size.width;
         let y = self.imageView.frame.origin.y;
         let height = self.imageView.frame.size.height;
 
+        // Parse words and draw bounding boxes
         for object in tesseract.getConfidenceByWord {
             
             let dict = object as [String : AnyObject];
@@ -71,21 +59,34 @@ class ViewController: UIViewController, TesseractDelegate  {
             if (range?.location != NSNotFound) {
             
                 NSLog("%@", dict);
-                
-                let string = (text as NSString).substringWithRange(range!);
-                NSLog("%@", string);
+                let number = (text as NSString).substringWithRange(range!);
+                NSLog("%@", number);
 
                 let box = (dict["boundingbox"] as NSValue).CGRectValue();
-                let confidence = dict["confidence"] as Double;
-                let convertedBox = CGRect(x: box.origin.x * ratio, y: height - (box.origin.y + box.size.height) * ratio, width: box.size.width * ratio, height: box.size.height * ratio)
-                let boxPath = UIBezierPath(rect: convertedBox);
-                path.appendPath(boxPath);
+                let convertedBox = CGRect(
+                    x: box.origin.x * ratio,
+                    y: y + height - (box.origin.y + box.size.height) * ratio,
+                    width: box.size.width * ratio,
+                    height: box.size.height * ratio
+                );
+                
+                let button = UIButton(frame: convertedBox);
+                button.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside);
+                button.backgroundColor = UIColor.greenColor();
+                button.titleLabel?.font = UIFont.systemFontOfSize(16.0);
+                button.titleLabel?.adjustsFontSizeToFitWidth = true;
+                button.setTitle(number, forState: UIControlState.Normal);
+                button.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal);
+                button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted);
+                self.view.addSubview(button);
+                self.buttons.append(button);
             }
         }
-
-        self.shapeLayer.path = path.CGPath;
     }
     
+    func buttonTapped(sender: UIButton) {
+        
+    }
     
     func progressImageRecognitionForTesseract(tesseract: Tesseract!) {
 //        NSLog("%@", String(tesseract.progress));
