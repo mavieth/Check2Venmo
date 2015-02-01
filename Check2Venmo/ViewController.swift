@@ -17,31 +17,36 @@ class ViewController: UIViewController, TesseractDelegate  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let bwImage = UIImage(named: "IMG_5684")?.blackAndWhite();
+        self.imageView.image = bwImage;
+
         var tesseract:Tesseract = Tesseract();
         tesseract.language = "eng";
         tesseract.delegate = self;
 //        tesseract.setVariableValue("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", forKey: "tessedit_char_whitelist");
-        tesseract.image = UIImage(named: "IMG_5684")?.blackAndWhite();
-        self.imageView.image = UIImage(named: "IMG_5684")?.blackAndWhite();
+        tesseract.image = bwImage;
         tesseract.recognize();
         
-        NSLog("%@", tesseract.recognizedText);
-        NSLog("%@", tesseract.getConfidenceByTextline);
-        let nsstring = NSString(string: tesseract.recognizedText);
         
+        for object in tesseract.getConfidenceByWord {
+            let dict = object as [String : AnyObject];
+            NSLog("%@", dict);
+            
+            let boundingbox = (dict["boundingbox"] as NSValue).CGRectValue();
+            let confidence = dict["confidence"] as Double;
+            let text = dict["text"] as String;
+        }
+
+        
+        let nsstring = NSString(string: tesseract.recognizedText);
+        self.textView.text = nsstring;
+
         var error: NSError?
         let regex = NSRegularExpression(pattern: "[0-9]+[.][0-9]{2}", options: nil, error: &error);
         regex?.enumerateMatchesInString(tesseract.recognizedText, options: nil, range: NSMakeRange(0, countElements(tesseract.recognizedText)), usingBlock: { (match, flags, stop) -> Void in
             let string = nsstring.substringWithRange(match.range);
             NSLog("%@", string);
         })
-
-        
-//        var array = string.componentsSeparatedByString("\n");
-//        for line in array {
-//            NSLog("%@", (line as NSString).doubleValue);
-//        }
-        self.textView.text = tesseract.recognizedText;
     }
     
     func progressImageRecognitionForTesseract(tesseract: Tesseract!) {
