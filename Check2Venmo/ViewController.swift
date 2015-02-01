@@ -11,36 +11,70 @@ import UIKit
 class ViewController: UIViewController, TesseractDelegate  {
 
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var ratioConstraint: NSLayoutConstraint!
+    let shapeLayer = CAShapeLayer();
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let bwImage = UIImage(named: "IMG_5684")?.blackAndWhite();
+        // Black & white source image
+        let bwImage = UIImage(named: "IMG_5684")!.blackAndWhite();
+        let imageSize = bwImage.size;
         self.imageView.image = bwImage;
+        
+        // Fit imageView to image
+        self.imageView.removeConstraint(self.ratioConstraint);
+        self.ratioConstraint = NSLayoutConstraint(item: self.imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: self.imageView, attribute: NSLayoutAttribute.Height, multiplier: imageSize.width / imageSize.height, constant: 0);
+        self.imageView.addConstraint(self.ratioConstraint);
+    }
+    
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews();
+        
+        // Fit shapeLayer to imageView
+        self.shapeLayer.strokeColor = UIColor.redColor().CGColor;
+        self.shapeLayer.fillColor = UIColor.yellowColor().colorWithAlphaComponent(0.2).CGColor;
+        self.shapeLayer.frame = self.imageView.bounds;
+        self.imageView.layer.addSublayer(self.shapeLayer);
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated);
+        
+        // Run Tesseract
         var tesseract:Tesseract = Tesseract();
         tesseract.language = "eng";
         tesseract.delegate = self;
-//        tesseract.setVariableValue("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", forKey: "tessedit_char_whitelist");
-        tesseract.image = bwImage;
+        tesseract.image = self.imageView.image;
         tesseract.recognize();
         
-        
+        // Parse words and draw boxes
+        let path = UIBezierPath();
+        let ratio = self.imageView.frame.size.width / self.imageView.image!.size.width;
+        let y = self.imageView.frame.origin.y;
+        let height = self.imageView.frame.size.height;
+
         for object in tesseract.getConfidenceByWord {
             let dict = object as [String : AnyObject];
             NSLog("%@", dict);
             
-            let boundingbox = (dict["boundingbox"] as NSValue).CGRectValue();
+            let box = (dict["boundingbox"] as NSValue).CGRectValue();
             let confidence = dict["confidence"] as Double;
             let text = dict["text"] as String;
+            
+            let convertedBox = CGRect(x: box.origin.x * ratio, y: height - (box.origin.y + box.size.height) * ratio, width: box.size.width * ratio, height: box.size.height * ratio)
+            let boxPath = UIBezierPath(rect: convertedBox);
+            path.appendPath(boxPath);
         }
-
         
+        self.shapeLayer.path = path.CGPath;
+        
+        
+        // Find matches
         let nsstring = NSString(string: tesseract.recognizedText);
-        self.textView.text = nsstring;
-
         var error: NSError?
         let regex = NSRegularExpression(pattern: "[0-9]+[.][0-9]{2}", options: nil, error: &error);
         regex?.enumerateMatchesInString(tesseract.recognizedText, options: nil, range: NSMakeRange(0, countElements(tesseract.recognizedText)), usingBlock: { (match, flags, stop) -> Void in
@@ -49,13 +83,15 @@ class ViewController: UIViewController, TesseractDelegate  {
         })
     }
     
+    
     func progressImageRecognitionForTesseract(tesseract: Tesseract!) {
-        self.textView.text = String(tesseract.progress);
+//        NSLog("%@", String(tesseract.progress));
     }
     
+    
     func shouldCancelImageRecognitionForTesseract(tesseract: Tesseract!) -> Bool {
-        return false; // return true, if you need to interrupt tesseract before it finishes
+        // return true, if you need to interrupt tesseract before it finishes
+        return false;
     }
-
 }
 
