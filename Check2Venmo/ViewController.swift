@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, TesseractDelegate  {
 
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var ratioConstraint: NSLayoutConstraint!
     var buttons: [UIButton] = [];
@@ -46,7 +47,9 @@ class ViewController: UIViewController, TesseractDelegate  {
 
         // Setup constants
         let ratio = self.imageView.frame.size.width / self.imageView.image!.size.width;
+        let x = self.imageView.frame.origin.x;
         let y = self.imageView.frame.origin.y;
+        let width = self.imageView.frame.size.width;
         let height = self.imageView.frame.size.height;
 
         // Parse words and draw bounding boxes
@@ -64,7 +67,7 @@ class ViewController: UIViewController, TesseractDelegate  {
 
                 let box = (dict["boundingbox"] as NSValue).CGRectValue();
                 let convertedBox = CGRect(
-                    x: box.origin.x * ratio,
+                    x: x + box.origin.x * ratio,
                     y: y + height - (box.origin.y + box.size.height) * ratio,
                     width: box.size.width * ratio,
                     height: box.size.height * ratio
@@ -78,7 +81,7 @@ class ViewController: UIViewController, TesseractDelegate  {
                 button.setTitle(number, forState: UIControlState.Normal);
                 button.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal);
                 button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted);
-                self.view.addSubview(button);
+                self.containerView.addSubview(button);
                 self.buttons.append(button);
             }
         }
