@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
-        Venmo.startWithAppId("venmo2332", secret: "agWk6kbF3bUZ4Jbzwm6QQ2hznLrkHP3J", name: "Sent via ReceiptScan");
+        Venmo.startWithAppId("2332", secret: "agWk6kbF3bUZ4Jbzwm6QQ2hznLrkHP3J", name: "Sent via ReceiptScan");
         return true
     }
     

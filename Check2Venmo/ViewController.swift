@@ -19,6 +19,8 @@ class ViewController: UIViewController, TesseractDelegate  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.updateVenmoStatus()
+
         // Black & white source image
         let bwImage = UIImage(named: "IMG_5684")!.blackAndWhite();
         let imageSize = bwImage.size;
@@ -87,8 +89,41 @@ class ViewController: UIViewController, TesseractDelegate  {
         }
     }
     
+    func updateVenmoStatus() {
+        if (Venmo.sharedInstance().isSessionValid() == true) {
+            let username = Venmo.sharedInstance().session.user.displayName;
+            let leftItem = UIBarButtonItem(title: username, style: UIBarButtonItemStyle.Bordered, target: self, action: "logout");
+            self.navigationItem.setLeftBarButtonItem(leftItem, animated: true);
+        }
+        else {
+            let leftItem = UIBarButtonItem(title: "Log in", style: UIBarButtonItemStyle.Bordered, target: self, action: "login");
+            self.navigationItem.setLeftBarButtonItem(leftItem, animated: true);
+        }
+    }
+    
+    func login() {
+        Venmo.sharedInstance().requestPermissions(["access_profile", "make_payments"], withCompletionHandler: { (success, error) -> Void in
+            if (success) {
+                self.updateVenmoStatus()
+            }
+            else {
+                UIAlertView(title: "Authorization failed", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "OK").show();
+            }
+        });
+    }
+
+    func logout() {
+        Venmo.sharedInstance().logout();
+    }
+    
     func buttonTapped(sender: UIButton) {
-        
+        self.performSegueWithIdentifier("Payment", sender: sender);
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let controller = segue.destinationViewController as PaymentViewController;
+        let text = (sender as UIButton).titleForState(UIControlState.Normal)!;
+        controller.amount = (text as NSString).doubleValue;
     }
     
     func progressImageRecognitionForTesseract(tesseract: Tesseract!) {

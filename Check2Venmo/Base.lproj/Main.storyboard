@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NIv-Wh-O8p">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14D72i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NIv-Wh-O8p">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Scan-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Check2Venmo" customModuleProvider="target" sceneMemberID="viewController">
@@ -47,16 +47,68 @@
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Ywn-EL-rna" secondAttribute="bottom" id="gVq-TX-GbJ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="6nb-o5-0JB"/>
+                    <navigationItem key="navigationItem" title="Scan" id="6nb-o5-0JB"/>
                     <connections>
                         <outlet property="containerView" destination="Ywn-EL-rna" id="zkC-I1-bis"/>
                         <outlet property="imageView" destination="ogB-eI-8NW" id="f6D-ms-add"/>
                         <outlet property="ratioConstraint" destination="JTd-P2-AlY" id="2HS-5a-zGQ"/>
+                        <segue destination="Icc-lv-5kx" kind="show" identifier="Payment" id="7FJ-Oy-OET"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="882" y="383"/>
+        </scene>
+        <!--Request Payment-->
+        <scene sceneID="8bp-dv-VfH">
+            <objects>
+                <viewController id="Icc-lv-5kx" customClass="PaymentViewController" customModule="Check2Venmo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jkJ-p7-gtw"/>
+                        <viewControllerLayoutGuide type="bottom" id="hkC-ws-AFs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="4wp-3a-V5E">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="$0.00" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oTv-9C-RPE">
+                                <rect key="frame" x="16" y="86" width="97" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="username, email, or phone number" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FxI-Bt-SGx">
+                                <rect key="frame" x="16" y="148" width="280" height="30"/>
+                                <color key="tintColor" red="0.2470588386" green="0.58039218189999997" blue="0.81568634510000004" alpha="1" colorSpace="deviceRGB"/>
+                                <color key="textColor" red="0.15686275059999999" green="0.18823531269999999" blue="0.2117647231" alpha="1" colorSpace="deviceRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="payment note" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lai-gq-otl">
+                                <rect key="frame" x="16" y="186" width="280" height="30"/>
+                                <color key="tintColor" red="0.2470588386" green="0.58039218189999997" blue="0.81568634510000004" alpha="1" colorSpace="deviceRGB"/>
+                                <color key="textColor" red="0.15686275059999999" green="0.18823531269999999" blue="0.2117647231" alpha="1" colorSpace="deviceRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="send"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Request Payment" id="mDy-a0-Abo">
+                        <barButtonItem key="rightBarButtonItem" title="Send" id="uh2-bY-8iU">
+                            <connections>
+                                <action selector="sendButtonTapped:" destination="Icc-lv-5kx" id="Uhx-ir-P5O"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="amountTextField" destination="oTv-9C-RPE" id="gRw-tR-DWS"/>
+                        <outlet property="noteTextField" destination="lai-gq-otl" id="Gby-g5-fcp"/>
+                        <outlet property="recipientTextField" destination="FxI-Bt-SGx" id="26j-wi-Ar9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fAF-iZ-DmK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1663" y="383"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="sn4-vO-JOP">

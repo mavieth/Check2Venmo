@@ -14,6 +14,7 @@
 		7C6556C81A26A94D007F2145 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C6556C61A26A94D007F2145 /* LaunchScreen.xib */; };
 		7C6556D41A26A94D007F2145 /* Check2VenmoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6556D31A26A94D007F2145 /* Check2VenmoTests.swift */; };
 		7C6556E21A26BDC8007F2145 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = 7C6556E11A26BDC8007F2145 /* tessdata */; };
+		7C87B27F1A9934B000A3EA06 /* PaymentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C87B27E1A9934B000A3EA06 /* PaymentViewController.swift */; };
 		9E2E8FA24C63C5134705FF3A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29082B735D32F89DC4315A41 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		7C6556D31A26A94D007F2145 /* Check2VenmoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Check2VenmoTests.swift; sourceTree = "<group>"; };
 		7C6556DD1A26BC2E007F2145 /* Check2Venmo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Check2Venmo-Bridging-Header.h"; sourceTree = "<group>"; };
 		7C6556E11A26BDC8007F2145 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
+		7C87B27E1A9934B000A3EA06 /* PaymentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 				7C6556DD1A26BC2E007F2145 /* Check2Venmo-Bridging-Header.h */,
 				7C6556BD1A26A94D007F2145 /* AppDelegate.swift */,
 				7C6556BF1A26A94D007F2145 /* ViewController.swift */,
+				7C87B27E1A9934B000A3EA06 /* PaymentViewController.swift */,
 				7C6556C11A26A94D007F2145 /* Main.storyboard */,
 				7C6556C41A26A94D007F2145 /* Images.xcassets */,
 				7C6556C61A26A94D007F2145 /* LaunchScreen.xib */,
@@ -278,6 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C6556C01A26A94D007F2145 /* ViewController.swift in Sources */,
+				7C87B27F1A9934B000A3EA06 /* PaymentViewController.swift in Sources */,
 				7C6556BE1A26A94D007F2145 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
