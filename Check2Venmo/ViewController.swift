@@ -57,9 +57,9 @@ class ViewController: UIViewController, TesseractDelegate  {
         // Parse words and draw bounding boxes
         for object in tesseract.getConfidenceByWord {
             
-            let dict = object as [String : AnyObject];
-            let text = dict["text"] as String;
-            let range = regex?.rangeOfFirstMatchInString(text, options: nil, range: NSMakeRange(0, countElements(text)));
+            let dict = object as! [String : AnyObject];
+            let text = dict["text"] as! String;
+            let range = regex?.rangeOfFirstMatchInString(text, options: nil, range: NSMakeRange(0, count(text)));
             
             if (range?.location != NSNotFound) {
             
@@ -67,7 +67,7 @@ class ViewController: UIViewController, TesseractDelegate  {
                 let number = (text as NSString).substringWithRange(range!);
                 NSLog("%@", number);
 
-                let box = (dict["boundingbox"] as NSValue).CGRectValue();
+                let box = (dict["boundingbox"] as! NSValue).CGRectValue();
                 let convertedBox = CGRect(
                     x: x + box.origin.x * ratio,
                     y: y + height - (box.origin.y + box.size.height) * ratio,
@@ -121,8 +121,8 @@ class ViewController: UIViewController, TesseractDelegate  {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let controller = segue.destinationViewController as PaymentViewController;
-        let text = (sender as UIButton).titleForState(UIControlState.Normal)!;
+        let controller = segue.destinationViewController as! PaymentViewController;
+        let text = (sender as! UIButton).titleForState(UIControlState.Normal)!;
         controller.amount = (text as NSString).doubleValue;
     }
     
